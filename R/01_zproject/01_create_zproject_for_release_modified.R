@@ -65,18 +65,25 @@ build_zonation_params$species_data_template = setNames(lapply(seq_along(build_zo
                                                                                                    c('code', 'sheet'))),
                                                               build_zonation_params$species_group_names)
 
-build_zonation_params$variant_cycle = rep(1:length(build_zonation_params$variant_templates), length(build_zonation_params$species_data_template) + 1) 
+build_zonation_params$variant_cycle = rep(1:(length(build_zonation_params$species_data_template) + 1), 
+                                          each = length(build_zonation_params$variant_templates)) 
+build_zonation_params$z_control_template = "templates/run_Z_template.sh"
+build_zonation_params$dat_template_file = "templates/template.dat"
+build_zonation_params$z_control_file = "run_biodiversa_source.sh"
+
+
 species_data <- as.data.frame(readr::read_csv(build_zonation_params$feature_data_file))
 
 # Read in aggregate weights
 agg_weights <- readr::read_csv(build_zonation_params$agg_weights_file) 
 
 # Set up the project
-japan_zproject <- initiate_zproject(zsetup_root = build_zonation_params$zsetup_root,
+zproject <- initiate_zproject(zsetup_root = build_zonation_params$zsetup_root,
                                     build_zonation_params$variant_templates,
                                     spp_data = build_zonation_params$species_data_template,
                                     data_dir = build_zonation_params$data_dir,
-                                    prefix_spp_paths = "../..")
+                                    prefix_spp_paths = "../..", 
+                                    dat_template_file = build_zonation_params$dat_template_file)
 
 # Set run configuration parameters ----------------------------------------
 
@@ -93,42 +100,51 @@ lapply(seq_along(build_zonation_params$species_data_template),
                                            build_zonation_params$species_data_template[[group_ind]]$sheet, 
                                            build_zonation_params$ppa_config_file)))
 
-variants <- lapply(seq_along(japan_zproject@variants), 
-                   function(variant_id) get_variant(japan_zproject, 
+variants <- lapply(seq_along(zproject@variants), 
+                   function(variant_id) get_variant(zproject, 
                                                     variant_id))
 
-variants <- lapply(seq_along(japan_zproject@variants), 
+variants <- lapply(seq_along(zproject@variants), 
                    function(variant_id) set_dat_param(variants[[variant_id]], 
                                                       "use groups", 
                                                       build_zonation_params$use_groups[variant_id])) 
 
-variants <- lapply(seq_along(japan_zproject@variants), 
+variants <- lapply(seq_along(zproject@variants), 
                    function(variant_id) set_dat_param(variants[[variant_id]], 
                                                       "groups file", 
                                                       file.path(variants[[variant_id]]@name, paste0(variants[[variant_id]]@name, "_groups.txt")))) 
 
-variants <- lapply(seq_along(japan_zproject@variants), 
+variants <- lapply(seq_along(zproject@variants), 
                    function(variant_id) set_dat_param(variants[[variant_id]], 
                                                       "post-processing list file",
                                                       build_zonation_params$ppa_config_file))
 
-variants <- lapply(seq_along(japan_zproject@variants), 
+variants <- lapply(seq_along(zproject@variants), 
                    function(variant_id) set_dat_param(variants[[variant_id]], 
                                                       "removal rule",
                                                       build_zonation_params$cell_removal_rule[variant_id] ))
 
-# lapply(seq_along(japan_zproject@variants), 
+# lapply(seq_along(zproject@variants), 
 #        function(variant_id) save_zvariant(variants[[variant_id]], 
 #                                           dir = file.path(build_zonation_params$zsetup_root, 
 #                                                           build_zonation_params$species_data_template[[build_zonation_params$variant_cycle[group_ind]]]$sheet),
 #                                           overwrite = TRUE, 
 #                                           debug_msg = FALSE))
 
-a = lapply(seq_along(japan_zproject@variants), 
-       function(variant_id) create_sh_file(variants[[variant_id]], 
-                                           remove_bat = FALSE))
+z_control_files = lapply(seq_along(zproject@variants), 
+                         function(variant_id) create_sh_file(variants[[variant_id]], 
+                                                             remove_bat = TRUE))
 
+build_zonation_params$control_template = "templates/run_Z_template.sh"
+build_zonation_params$dat_template_file = "templates/template.dat"
+build_zonation_params$Z_sh_runfile = "Z_source.sh"
 
+z_template <- readLines(build_zonation_params$z_control_template)
+
+file_ID <- file(build_zonation_params$z_control_file)
+writeLines(c(z_template, paste0("/bin/sh ", z_control_files)), file_ID)
+close(file_ID)
+Sys.chmod(build_zonation_params$z_control_file)
 
 
 
@@ -140,7 +156,7 @@ a = lapply(seq_along(japan_zproject@variants),
 # 
 # for (taxon in spp_data) {
 # 
-#   variant <- get_variant(japan_zproject, variant_id)
+#   variant <- get_variant(zproject, variant_id)
 # 
 #   # Generate groups
 #   # Parse groups based on the Red-list status
@@ -175,7 +191,7 @@ a = lapply(seq_along(japan_zproject@variants),
 #   # [XX]_[TX]_abf -------------------------------------------------------------
 # 
 #   variant_id <- variant_id + 1
-#   variant <- get_variant(japan_zproject, variant_id)
+#   variant <- get_variant(zproject, variant_id)
 #   message("Editing variant: ", variant@name)
 # 
 #   # Manipulate the spp data
@@ -208,7 +224,7 @@ a = lapply(seq_along(japan_zproject@variants),
 #   # [XX]_[TX]_caz_wgt ---------------------------------------------------------
 # 
 #   variant_id <- variant_id + 1
-#   variant <- get_variant(japan_zproject, variant_id)
+#   variant <- get_variant(zproject, variant_id)
 #   message("Editing variant: ", variant@name)
 # 
 #   # Set weights
@@ -242,7 +258,7 @@ a = lapply(seq_along(japan_zproject@variants),
 #   # [XX]_[TX]_abf_wgt ---------------------------------------------------------
 # 
 #   variant_id <- variant_id + 1
-#   variant <- get_variant(japan_zproject, variant_id)
+#   variant <- get_variant(zproject, variant_id)
 #   message("Editing variant: ", variant@name)
 # 
 #   # Set weights
@@ -276,7 +292,7 @@ a = lapply(seq_along(japan_zproject@variants),
 #   # [XX]_[TX]_caz_wgt_con -----------------------------------------------------
 # 
 #   variant_id <- variant_id + 1
-#   variant <- get_variant(japan_zproject, variant_id)
+#   variant <- get_variant(zproject, variant_id)
 #   message("Editing variant: ", variant@name)
 # 
 #   # Set weights
@@ -323,7 +339,7 @@ a = lapply(seq_along(japan_zproject@variants),
 #   # [XX]_[TX]_abf_wgt_con -----------------------------------------------------
 # 
 #   variant_id <- variant_id + 1
-#   variant <- get_variant(japan_zproject, variant_id)
+#   variant <- get_variant(zproject, variant_id)
 #   message("Editing variant: ", variant@name)
 # 
 #   # Set weights
@@ -371,7 +387,7 @@ a = lapply(seq_along(japan_zproject@variants),
 #   # [XX]_[TX]_caz_wgt_con_hm3 -------------------------------------------------
 # 
 #   variant_id <- variant_id + 1
-#   variant <- get_variant(japan_zproject, variant_id)
+#   variant <- get_variant(zproject, variant_id)
 #   message("Editing variant: ", variant@name)
 # 
 #   # Set weights
@@ -422,7 +438,7 @@ a = lapply(seq_along(japan_zproject@variants),
 #   # [XX]_[TX]_abf_wgt_con_hm3 -------------------------------------------------
 # 
 #   variant_id <- variant_id + 1
-#   variant <- get_variant(japan_zproject, variant_id)
+#   variant <- get_variant(zproject, variant_id)
 #   message("Editing variant: ", variant@name)
 # 
 #   # Set weights
@@ -478,7 +494,7 @@ a = lapply(seq_along(japan_zproject@variants),
 # 
 # # Generate variants for all species together -------------------------------
 # 
-# variant <- get_variant(japan_zproject, variant_id)
+# variant <- get_variant(zproject, variant_id)
 # 
 # # Generate groups
 # # Parse groups based on the Red-list status
@@ -516,7 +532,7 @@ a = lapply(seq_along(japan_zproject@variants),
 # # [XX]_abf
 # 
 # variant_id <- variant_id + 1
-# variant <- get_variant(japan_zproject, variant_id)
+# variant <- get_variant(zproject, variant_id)
 # message("Editing variant: ", variant@name)
 # 
 # # Set z-value on taxon level. First, we need to know how many species are in
@@ -558,7 +574,7 @@ a = lapply(seq_along(japan_zproject@variants),
 # 
 # # [XX]_caz_wgt
 # variant_id <- variant_id + 1
-# variant <- get_variant(japan_zproject, variant_id)
+# variant <- get_variant(zproject, variant_id)
 # message("Editing variant: ", variant@name)
 # 
 # dat_sk <- dat[dat$st.species == "Salamandrella_keyserlingii",]
@@ -594,7 +610,7 @@ a = lapply(seq_along(japan_zproject@variants),
 # 
 # # [XX]_abf_wgt
 # variant_id <- variant_id + 1
-# variant <- get_variant(japan_zproject, variant_id)
+# variant <- get_variant(zproject, variant_id)
 # message("Editing variant: ", variant@name)
 # 
 # # Manipulate sppdata
@@ -625,7 +641,7 @@ a = lapply(seq_along(japan_zproject@variants),
 # 
 # # [XX]_[TX]_caz_wgt_con
 # variant_id <- variant_id + 1
-# variant <- get_variant(japan_zproject, variant_id)
+# variant <- get_variant(zproject, variant_id)
 # message("Editing variant: ", variant@name)
 # 
 # # Manipulate sppdata
@@ -668,7 +684,7 @@ a = lapply(seq_along(japan_zproject@variants),
 # 
 # # [XX]_[TX]_abf_wgt_con
 # variant_id <- variant_id + 1
-# variant <- get_variant(japan_zproject, variant_id)
+# variant <- get_variant(zproject, variant_id)
 # message("Editing variant: ", variant@name)
 # 
 # # Manipulate sppdata
@@ -711,7 +727,7 @@ a = lapply(seq_along(japan_zproject@variants),
 # 
 # # [XX]_[TX]_caz_wgt_con_hm2
 # variant_id <- variant_id + 1
-# variant <- get_variant(japan_zproject, variant_id)
+# variant <- get_variant(zproject, variant_id)
 # message("Editing variant: ", variant@name)
 # 
 # # Manipulate sppdata
@@ -758,7 +774,7 @@ a = lapply(seq_along(japan_zproject@variants),
 # 
 # # [XX]_[TX]_abf_wgt_con_hm2
 # variant_id <- variant_id + 1
-# variant <- get_variant(japan_zproject, variant_id)
+# variant <- get_variant(zproject, variant_id)
 # message("Editing variant: ", variant@name)
 # 
 # # Manipulate sppdata
@@ -805,7 +821,7 @@ a = lapply(seq_along(japan_zproject@variants),
 # 
 # # [XX]_[TX]_caz_wgt_con_hm3
 # variant_id <- variant_id + 1
-# variant <- get_variant(japan_zproject, variant_id)
+# variant <- get_variant(zproject, variant_id)
 # message("Editing variant: ", variant@name)
 # 
 # # Manipulate sppdata
@@ -852,7 +868,7 @@ a = lapply(seq_along(japan_zproject@variants),
 # 
 # # [XX]_[TX]_abf_wgt_con_hm3
 # variant_id <- variant_id + 1
-# variant <- get_variant(japan_zproject, variant_id)
+# variant <- get_variant(zproject, variant_id)
 # message("Editing variant: ", variant@name)
 # 
 # # Manipulate sppdata

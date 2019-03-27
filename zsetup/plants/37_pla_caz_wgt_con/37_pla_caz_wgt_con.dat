@@ -4,6 +4,3 @@ warp factor = 1000
 edge removal = 1
 add edge points = 0
 initial removal percent = 0.0
-use groups = 1
-groups file = 37_pla_caz_wgt_con/37_pla_caz_wgt_con_groups.txt
-post-processing list file = ppa_config.txt
