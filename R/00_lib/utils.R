@@ -210,8 +210,7 @@ initiate_zproject <- function(zsetup_root = "zsetup",
                     variants = variant_names,
                     dat_template_file = dat_template_file,
                     spp_template_dir = file.path(data_dir, spp_data[[taxon]]$sheet),
-                    override_path = file.path(prefix_spp_paths, data_dir,
-                                              spp_data[[taxon]]$sheet),
+                    override_path = file.path(data_dir, spp_data[[taxon]]$sheet),
                     overwrite = TRUE, debug = TRUE)
 
     
@@ -230,13 +229,13 @@ initiate_zproject <- function(zsetup_root = "zsetup",
   variant_names <- paste0(ids, variant_names)
   # Use "recursive = TRUE" with specific spp name template to get all the
   # rasters from different input folders
-  
+  browser()
   create_zproject(name = sub_project_dir,
                   dir = ".",
                   variants = variant_names,
                   dat_template_file = dat_template_file,
                   spp_template_dir = data_dir,
-                  override_path = file.path(prefix_spp_paths, data_dir),
+                  override_path = data_dir,
                   overwrite = TRUE,
                   debug = FALSE,
                   recursive = TRUE,
