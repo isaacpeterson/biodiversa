@@ -210,7 +210,8 @@ initiate_zproject <- function(zsetup_root = "zsetup",
                     variants = variant_names,
                     dat_template_file = dat_template_file,
                     spp_template_dir = file.path(data_dir, spp_data[[taxon]]$sheet),
-                    override_path = file.path(data_dir, spp_data[[taxon]]$sheet),
+                    override_path = paste0(prefix_spp_paths, data_dir,
+                                              spp_data[[taxon]]$sheet),
                     overwrite = TRUE, debug = TRUE)
 
     
@@ -235,7 +236,7 @@ initiate_zproject <- function(zsetup_root = "zsetup",
                   variants = variant_names,
                   dat_template_file = dat_template_file,
                   spp_template_dir = data_dir,
-                  override_path = data_dir,
+                  override_path = paste0(prefix_spp_paths, data_dir),
                   overwrite = TRUE,
                   debug = FALSE,
                   recursive = TRUE,

@@ -29,7 +29,7 @@ build_zonation_params$variant_templates = c("[TX]_caz",
                                             "[TX]_caz_wgt_con_hm3",
                                             "[TX]_abf_wgt_con_hm3")
 
-build_zonation_params$data_dir <- paste0('~/workdir/species_data/zenodo')
+build_zonation_params$data_dir <- paste0('../../workdir/species_data/zenodo')
 build_zonation_params$zsetup_root <- "zsetup"
 build_zonation_params$feature_data_file <- paste0(build_zonation_params$data_dir, "/species_params/biodiv_features.csv")
 
@@ -82,7 +82,7 @@ zproject <- initiate_zproject(zsetup_root = build_zonation_params$zsetup_root,
                                     build_zonation_params$variant_templates,
                                     spp_data = build_zonation_params$species_data_template,
                                     data_dir = build_zonation_params$data_dir,
-                                    prefix_spp_paths = vector(), 
+                                    prefix_spp_paths = '../', 
                                     dat_template_file = build_zonation_params$dat_template_file)
 
 # Set run configuration parameters ----------------------------------------
