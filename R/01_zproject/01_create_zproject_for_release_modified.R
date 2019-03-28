@@ -82,7 +82,7 @@ zproject <- initiate_zproject(zsetup_root = build_zonation_params$zsetup_root,
                                     build_zonation_params$variant_templates,
                                     spp_data = build_zonation_params$species_data_template,
                                     data_dir = build_zonation_params$data_dir,
-                                    prefix_spp_paths = "../..", 
+                                    prefix_spp_paths = "", 
                                     dat_template_file = build_zonation_params$dat_template_file)
 
 # Set run configuration parameters ----------------------------------------
