@@ -229,7 +229,7 @@ initiate_zproject <- function(zsetup_root = "zsetup",
   variant_names <- paste0(ids, variant_names)
   # Use "recursive = TRUE" with specific spp name template to get all the
   # rasters from different input folders
-  browser()
+
   create_zproject(name = sub_project_dir,
                   dir = ".",
                   variants = variant_names,
