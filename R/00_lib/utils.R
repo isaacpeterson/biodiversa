@@ -85,7 +85,7 @@ create_sh_file <- function(x, remove_bat) {
   sh_file <- gsub("\\.bat", "\\.sh", bat_file)
   
   cmd_lines <- readLines(bat_file)
-  new_cmd_lines <- c("#!/bin/sh")
+  new_cmd_lines <- c("#!/bin/sh", 'cd "$(dirname $0)"')
   
   for (line in cmd_lines) {
     line <- gsub("call ", "", line)
@@ -181,7 +181,7 @@ initiate_zproject <- function(zsetup_root = "zsetup",
                               data_dir = "../Data.150928",
                               prefix_spp_paths = "../..",
                               dat_template_file = "templates/template.dat") {
-  
+
   if (!file.exists(zsetup_root)){
     dir.create(zsetup_root, recursive = TRUE)
   }
@@ -190,6 +190,7 @@ initiate_zproject <- function(zsetup_root = "zsetup",
   variant_id <- 1
   
   for (taxon in names(spp_data)) {
+    
     variant_names <- variant_templates
     sub_project_dir <- file.path(zsetup_root, taxon)
     message("Creating sub-project in ", sub_project_dir)
