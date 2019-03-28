@@ -1,1 +1,1 @@
-LSM ../../workdir/species_data/zenodo/group_layers/prefecture.tif 0 -1 0
+LSM ../../workdir/species_data/zenodo//group_layers/prefecture.tif 0 -1 0

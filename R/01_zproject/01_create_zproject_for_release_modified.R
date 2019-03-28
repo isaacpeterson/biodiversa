@@ -29,7 +29,7 @@ build_zonation_params$variant_templates = c("[TX]_caz",
                                             "[TX]_caz_wgt_con_hm3",
                                             "[TX]_abf_wgt_con_hm3")
 
-build_zonation_params$data_dir <- paste0('../../workdir/species_data/zenodo')
+build_zonation_params$data_dir <- paste0('../../workdir/species_data/zenodo/')
 build_zonation_params$zsetup_root <- "zsetup"
 build_zonation_params$feature_data_file <- paste0(build_zonation_params$data_dir, "/species_params/biodiv_features.csv")
 
