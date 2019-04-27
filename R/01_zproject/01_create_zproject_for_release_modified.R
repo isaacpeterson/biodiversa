@@ -38,7 +38,7 @@ build_zonation_params$ppa_raster_file <- paste0(build_zonation_params$data_dir, 
 build_zonation_params$ppa_cmd_string <- paste(c("LSM", build_zonation_params$ppa_raster_file, 0, -1, 0), collapse = " ")
 
 build_zonation_params$condition_raster_file <- paste0(build_zonation_params$data_dir, "/group_layers/hii_rescaled_simple.tif")
-# Hierarchical masks
+
 build_zonation_params$hm3_raster_file <- paste0(build_zonation_params$data_dir, "/group_layers/PA_3_levels_simple.tif")
 
 build_zonation_params$w_field <- "weight"
@@ -47,8 +47,6 @@ build_zonation_params$ppa_config_file <- "ppa_config.txt"
 build_zonation_params$use_groups = rep(1, 100)
 build_zonation_params$cell_removal_rule = rep(c(1, 2), 50)
 
-# Make a list to hold information on the different taxa names, short codes
-# and Excel sheet names (sheet names not actually needed).
 
 # build_zonation_params$species_data_template <- list("amphibians" = list("code" = "amp", "sheet" = "amphibians"),
 #                                                 "birds" = list("code" = "bir", "sheet" = "birds"),
@@ -86,13 +84,6 @@ zproject <- initiate_zproject(zsetup_root = build_zonation_params$zsetup_root,
                                     dat_template_file = build_zonation_params$dat_template_file)
 
 # Set run configuration parameters ----------------------------------------
-
-# In principle, the preprocessing of the same type of variant for each taxon
-# (e.g. 01_amp_caz, 06_bir_caz, 11_frf_caz etc.) is the same. Thus  let's
-# automate it a bit.
-
-# Use a counting variable to identify variant IDs.
-
 
 lapply(seq_along(build_zonation_params$species_data_template), 
        function(group_ind) write(build_zonation_params$ppa_cmd_string,

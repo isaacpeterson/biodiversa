@@ -30,6 +30,7 @@ calc_stats <- function(x, mult = 1) {
   skewness <- moments::skewness(x)
   kurtosis <- moments::kurtosis(x)
   zeros <- sum(x == 0.0)
+  
   return(data.frame(min = min, q25 = q25, sdmin = mean - sd,
                     mean = mean, median = median,
                     sdmax = mean + sd, q75 = q75, max = max,
@@ -196,8 +197,7 @@ initiate_zproject <- function(zsetup_root = "zsetup",
     message("Creating sub-project in ", sub_project_dir)
     
     # Generate ids dynamically
-    ids <- sprintf("%02d_",
-                   variant_id:(variant_id + length(variant_names) - 1))
+    ids <- sprintf("%02d_", variant_id:(variant_id + length(variant_names) - 1))
 
     # Generate actual variant names
     variant_names <- paste0(ids,
