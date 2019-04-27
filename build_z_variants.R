@@ -31,7 +31,7 @@ build_variant_files <- function(variants_object, build_type, build_zonation_para
     } else if (build_type == 'species_list'){
 
       current_species_group = variants_object$links_variants[[which(names(variants_object$links_variants) == variants_object$z_variants$group_names[variant_ind])]]
-      data_to_write = paste0(build_zonation_params$base_species_control, " ", build_zonation_params$path_to_species_data, current_species_group)
+      data_to_write = paste0(build_zonation_params$base_species_control, " ", build_zonation_params$variant_path_to_species_data, current_species_group)
       current_file = paste0(build_zonation_params$workdir, current_variant, '/', current_variant, '.spp')
       
     }
@@ -57,7 +57,7 @@ params_object$z_params$output_control_string = list("--grid-output-formats=compr
 params_object$z_params$base_species_control = '1 1 1 1 0.25'
 params_object$z_params$base_z_control = '0.0 0 1.0 0'
 params_object$z_params$local_sh_preamble = c("#!/bin/sh", 'cd "$(dirname $0)"')
-params_object$z_params$path_to_species_data = 'species_data/5km/'
+params_object$z_params$variant_path_to_species_data = '../species_data/5km/'
 params_object$z_params$workdir = 'z_variants/'
 params_object$z_params$global_sh_preamble = c('#!/bin/bash -l',
                                             '# created: ',
@@ -85,7 +85,8 @@ params_object$z_params$z_datfile_control_template = c('[Settings]',
 variants_object <- list()
 variants_object$z_variants <- expand.grid(params_object$variants, stringsAsFactors=FALSE)
 variants_object$z_variant_files <- paste0(params_object$z_params$workdir, "z_variant_", seq(nrow(variants_object$z_variants)), '.sh')
-variants_object$links_files <- list.files(paste0('~/species_data/biodiversa/5km/link_layers/'))
+variants_object$links_files <- list.files(paste0('species_data/5km/link_layers/'))
+
 variants_object$links_variants <- setNames(lapply(seq_along(params_object$links_fraction), 
                                          function(i) sample(variants_object$links_files, 
                                                             round(length(variants_object$links_files)*params_object$links_fraction[[i]]/100))),
