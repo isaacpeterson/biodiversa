@@ -8,7 +8,7 @@ library(readr)
 library(readxl)
 library(rgdal)
 
-build_variant_files <- function(variants_object, build_type, build_zonation_params){
+build_variant_files <- function(variants_object, build_type, z_params){
   
   for (variant_ind in seq(nrow(variants_object$z_variants))){
     
@@ -16,23 +16,23 @@ build_variant_files <- function(variants_object, build_type, build_zonation_para
     
     if (build_type == 'local_shell'){
       
-      data_to_write = c(build_zonation_params$local_sh_preamble, 
+      data_to_write = c(z_params$local_sh_preamble, 
                         paste("zig4 -r", 
                               paste0(current_variant, '/', current_variant, '.dat'),
                               paste0(current_variant, '/', current_variant, '.spp'), 
                               paste0(current_variant, '/out/', current_variant, '_out.txt'), 
-                              build_zonation_params$base_z_control,
-                              build_zonation_params$output_control_string))
+                              z_params$base_z_control,
+                              z_params$output_control_string))
       current_file = variants_object$z_variant_files[variant_ind]
     } else if (build_type == 'dat'){
-      data_to_write = build_zonation_params$z_datfile_control_template
-      current_file = paste0(build_zonation_params$workdir, current_variant, '/', current_variant, '.dat')
+      data_to_write = z_params$z_datfile_control_template
+      current_file = paste0(z_params$workdir, current_variant, '/', current_variant, '.dat')
       
     } else if (build_type == 'species_list'){
 
       current_species_group = variants_object$links_variants[[which(names(variants_object$links_variants) == variants_object$z_variants$group_names[variant_ind])]]
-      data_to_write = paste0(build_zonation_params$base_species_control, " ", build_zonation_params$variant_path_to_species_data, current_species_group)
-      current_file = paste0(build_zonation_params$workdir, current_variant, '/', current_variant, '.spp')
+      data_to_write = paste0(z_params$base_species_control, " ", z_params$species_data_rel_to_variant_path, current_species_group)
+      current_file = paste0(z_params$workdir, current_variant, '/', current_variant, '.spp')
       
     }
     
@@ -57,7 +57,7 @@ params_object$z_params$output_control_string = list("--grid-output-formats=compr
 params_object$z_params$base_species_control = '1 1 1 1 0.25'
 params_object$z_params$base_z_control = '0.0 0 1.0 0'
 params_object$z_params$local_sh_preamble = c("#!/bin/sh", 'cd "$(dirname $0)"')
-params_object$z_params$variant_path_to_species_data = '../../species_data/5km/'
+params_object$z_params$species_data_rel_to_variant_path = '../../species_data/5km/link_layers/'
 params_object$z_params$workdir = 'z_variants/'
 params_object$z_params$global_sh_preamble = c('#!/bin/bash -l',
                                             '# created: ',
