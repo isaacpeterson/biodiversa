@@ -85,7 +85,7 @@ params_object$z_params$z_datfile_control_template = c('[Settings]',
 variants_object <- list()
 variants_object$z_variants <- expand.grid(params_object$variants, stringsAsFactors=FALSE)
 variants_object$z_variant_files <- paste0(params_object$z_params$workdir, "z_variant_", seq(nrow(variants_object$z_variants)), '.sh')
-variants_object$links_files <- list.files(paste0('species_data/5km/link_layers/'))
+variants_object$links_files <- list.files(paste0('species_data/5km/link_layers/'), recursive = TRUE)
 
 variants_object$links_variants <- setNames(lapply(seq_along(params_object$links_fraction), 
                                          function(i) sample(variants_object$links_files, 
