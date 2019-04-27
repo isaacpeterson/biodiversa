@@ -57,7 +57,7 @@ params_object$z_params$output_control_string = list("--grid-output-formats=compr
 params_object$z_params$base_species_control = '1 1 1 1 0.25'
 params_object$z_params$base_z_control = '0.0 0 1.0 0'
 params_object$z_params$local_sh_preamble = c("#!/bin/sh", 'cd "$(dirname $0)"')
-params_object$z_params$variant_path_to_species_data = '../species_data/5km/'
+params_object$z_params$variant_path_to_species_data = '../../species_data/5km/'
 params_object$z_params$workdir = 'z_variants/'
 params_object$z_params$global_sh_preamble = c('#!/bin/bash -l',
                                             '# created: ',
