@@ -1,0 +1,9 @@
+.Rhistory
+.Rapp.history
+.RData
+.DS_Store
+species_data/
+templates/
+zsetup/
+zsetup_backup/
+

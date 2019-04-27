@@ -64,7 +64,7 @@ build_species_layers <- function(site_by_species, study_region, species_loc_mapp
 
 
 build_links_params = list()
-build_links_params$build_link_layers = FALSE
+build_links_params$build_link_layers = TRUE
 build_links_params$build_species_layers = FALSE
 build_links_params$workdir = '~/species_data/biodiversa/5km/'
 build_links_params$site_by_species_filename = paste0(build_links_params$workdir, 'Site_By_Species_21Feb.rds')
