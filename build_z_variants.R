@@ -59,7 +59,7 @@ params_object$variants$warp_factor = 1000
 params_object$variants$edge_removal = 1
 
 params_object$variants$use_weights = c(FALSE)
-params_object$links_fraction = seq(1, 5, 20, 50, 100, 10)
+params_object$links_fraction = c(1, 5, 20, 50, 100, 10)
 params_object$variants$group_names = formatC(params_object$links_fraction, width = 3, format = "d", flag = "0")
 
 params_object$z_params$output_control_string = list("--grid-output-formats=compressed-tif --image-output-formats=png")
