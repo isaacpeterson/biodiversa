@@ -27,12 +27,10 @@ build_variant_files <- function(variants_object, build_type, z_params){
       current_file = variants_object$z_variant_files[variant_ind]
     } else if (build_type == 'dat'){
 
-      data_to_write = '[settings]'
+      data_to_write = '[Settings]'
       data_to_write = c(data_to_write, paste0("removal rule = ", variants_object$z_variants$removal_rule[variant_ind]))
       data_to_write = c(data_to_write, paste0("warp factor = ", variants_object$z_variants$warp_factor[variant_ind]))
       data_to_write = c(data_to_write, paste0("edge removal = ", variants_object$z_variants$edge_removal[variant_ind]))
-      data_to_write = c(data_to_write, paste0("add edge points = ", variants_object$z_variants$add_edge_points[variant_ind]))
-      data_to_write = c(data_to_write, paste0("initial removal percent = ", variants_object$z_variants$initial_removal_percent[variant_ind]))
 
       current_file = paste0(z_params$workdir, current_variant, '/', current_variant, '.dat')
       
@@ -56,11 +54,9 @@ build_variant_files <- function(variants_object, build_type, z_params){
 
 params_object = list()
 
-params_object$variants$removal_rule = c(1, 2)
+params_object$variants$removal_rule = c(2)
 params_object$variants$warp_factor = 1000
 params_object$variants$edge_removal = 1
-params_object$variants$add_edge_points = 0
-params_object$variants$initial_removal_percent = 0
 
 params_object$variants$use_weights = c(FALSE)
 params_object$links_fraction = seq(10,100, by = 10)
