@@ -55,7 +55,7 @@ build_variant_files <- function(variants_object, build_type, z_params){
 params_object = list()
 
 params_object$variants$removal_rule = c(2)
-params_object$variants$warp_factor = 1000
+params_object$variants$warp_factor = 2000
 params_object$variants$edge_removal = 1
 
 params_object$variants$use_weights = c(FALSE)
