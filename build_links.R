@@ -3,6 +3,43 @@ library(raster)
 library(foreign)
 library(reshape2)
 
+aggregate_rasters <- function(write_dir, current_filenames){
+
+  for (raster_ind in seq_along(current_filenames)){
+    current_species_filename = paste0(write_dir, current_filenames[raster_ind])
+    current_raster = raster(current_species_filename)
+    if (raster_ind == 1){
+      raster_stack = current_raster
+    } else{
+      raster_stack = stack(raster_stack, current_raster)
+      raster_stack = sum(raster_stack)
+    }
+    
+  }
+  
+  return(raster_stack) 
+  
+}
+
+write_aggregated_rasters <- function(pp_links, raster_dir){
+
+  if (!file.exists(paste0(raster_dir, 'aggregated/'))){
+    dir.create(paste0(raster_dir, 'aggregated/'), recursive = TRUE)
+  }
+  
+  for (predator_ind in seq_along(rownames(pp_links))){
+    current_links_filenames = list.files(path = raster_dir, pattern = paste0('pred_', predator_ind, '_'))
+    
+    if (length(current_links_filenames) > 0){
+
+      raster_to_write <- aggregate_rasters(raster_dir, current_links_filenames)
+      writeRaster(raster_to_write, paste0(paste0(raster_dir, 'aggregated/'), 'pred_', predator_ind, '_aggregated.tif'), format='GTiff', overwrite = TRUE)
+      print(paste('predator', predator_ind, 'done'))
+    }
+    
+    
+  }
+}
 
 build_current_raster <- function(raster_to_write, species_loc_mapping, elements_to_replace, current_filename){
   values(raster_to_write)[species_loc_mapping] <- elements_to_replace
@@ -64,14 +101,13 @@ build_species_layers <- function(site_by_species, study_region, species_loc_mapp
 
 
 build_links_params = list()
-build_links_params$build_link_layers = TRUE
+build_links_params$build_link_layers = FALSE
 build_links_params$build_species_layers = FALSE
 build_links_params$workdir = 'species_data/5km/'
 build_links_params$site_by_species_filename = paste0(build_links_params$workdir, 'Site_By_Species_21Feb.rds')
 build_links_params$pred_by_prey_filename = paste0(build_links_params$workdir, 'BARM_binary_without_eggs.rds')
 build_links_params$grid_ref_filename = paste0(build_links_params$workdir, 'reference_grid_5km.img')
 build_links_params$ref_grid_vals = paste0(build_links_params$workdir, 'reference_grid_5km.img.vat.dbf')
-
 
 
 input_data = list()
@@ -112,5 +148,14 @@ if (build_links_params$build_link_layers == TRUE){
 }
 
 link_filenames = list.files(paste0(build_links_params$workdir, '/link_layers/'))
+
+write_aggregated_rasters(output_data_objects$pp_links, raster_dir = paste0(build_links_params$workdir, '/link_layers/'))
+
+pdf(file = '~/GitHub/biodiversa/pp_links.pdf')
+par(pty="s")
+image(raster(output_data_objects$symmetrised_pp), col = c("#000000", "#E6E6E6"))
+graphics.off()
+
+
 
 
